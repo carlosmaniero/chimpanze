@@ -1,3 +1,7 @@
 local_settings.php
 *.swp
 *.swo
+*.bkp
+*.bak
+composer.lock
+vendor/*
