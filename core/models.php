@@ -3,12 +3,13 @@ class Model{
     protected $fields = [];
     protected $db;
     protected $table_name;
+    public $id = null;
 
     function __construct($db){
         $this->db = $db;
     }
 
-    function get_insert_fields(){
+    function get_list_fields(){
         $insert_fields = "";
         for($i=0; $i < count($this->fields); $i++){
             if($insert_fields != ""){
@@ -41,12 +42,13 @@ class Model{
     function set_data($data){
         $keys = array_keys($data);
         for($i=0; $i < count($keys); $i++){
+            $key = $keys[$i];
             $this->{$key} = $data[$key];
         }
     }
 
     function get_insert_sql(){
-        $insert_fields = $this->get_insert_fields();
+        $insert_fields = $this->get_list_fields();
         $prepared = $this->get_prepared_fields();
         $sql = "INSERT INTO $this->table_name ($insert_fields) VALUES ($prepared)";
         return $sql;
@@ -62,5 +64,35 @@ class Model{
         $query->execute($this->get_save_data());
         if($insert)
             $this->id = $this->db->lastInsertId();
+    }
+
+    function get($id){
+        $id = (int) $id;
+        $this->id = $id;
+        $fields = $this->get_list_fields();
+        $query = $this->db->query("SELECT ($fields) from $this->table_name where id=$id");
+        $this->set_data($query->fetch(PDO::FETCH_ASSOC));
+    }
+
+    function get_delete_sql(){
+        return "DELETE FROM $this->table_name where id=$this->id";
+    }
+
+    function delete(){
+        $query = $this->db->prepare($this->get_delete_sql());
+        $ret = $query->execute();
+        $this->id = null;
+        return $ret;
+    }
+
+    static function queryset(){
+        $queryset = array();
+        $i = 0;
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $queryset[$i] = new $model($db);
+            $queryset[$i].set_data($row);
+            $i++;
+        }
+        return $queryset;
     }
 }
