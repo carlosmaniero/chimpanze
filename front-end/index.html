@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="images/favicon.png">
+
+    <title>Chimpanze</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="style.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="bootstrap/js/html5shiv.js"></script>
+    <script src="bootstrap/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body data-spy="scroll" data-target="#topnav" ng-app="chimpanze" ng-controller="MainController">
+
+    <div class="text-center">
+    <img src="images/logo.jpg" alt="" width="200">
+    </div>
+    <section class="gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="text-center"><strong>Chimpanzé</strong></h3>
+                    <div class="text-center"><small>Um criador simples de e-mail marketing</small></div>
+                </div>
+            </div>
+        </div>
+    </section> 
+<div class="container" id="actions">
+    <!-- Example row of columns -->
+    <div class="row features">
+        <div class="col-lg-6 text-center">
+            <div class="single-fet">
+                <div>
+                    <span class="icon-stack icon-4x">
+                      <i class="icon-circle icon-stack-base"></i>
+                      <i class="icon-file icon-light"></i>
+                    </span>
+                </div>
+                <h2>Templates</h2>
+                <p>Cadastro do templates dos e-mails. Para realizar essa tarefa é necessário conhecimentos básicos de HTML.</p>
+                <a class="btn btn-default" ng-click="manage_templates()" href="">
+                    Gerenciar
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-6 text-center">
+            <div class="single-fet">
+                <div>
+                    <span class="icon-stack icon-4x">
+                      <i class="icon-circle icon-stack-base"></i>
+                      <i class="icon-envelope icon-light"></i>
+                    </span>
+                </div>
+                <h2>E-mail Marketing</h2>
+                <p>Ferramenta para personalizar e gerar e-mails marketing. Utilizando templates como base.</p>
+                <a class="btn btn-default" ng-click="manage_emails()" href="">
+                    Gerenciar
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<section class="slider" id="features">
+    <div class="container">
+        <div class="inner-page" ng-show="current_page == 'intro'">
+            <h2 class="page-headline large text-center">Selecione uma tarefa acima para iniciar o gerenciamento</h2>
+        </div>
+        <!-- Templates -->
+        <div class="inner-page" ng-show="current_page == 'manage_templates'" ng-controller="TemplateController">
+            <h2 class="page-headline large text-center">Gerenciamento de templates</h2>
+            <p class="text-center">Selecione um template para editar ao lado, ou crie uma nova  <a href="" ng-click="add()" class="btn btn-xs btn-default">clicando aqui</a></p>
+            
+            <div class="row inner-page margin-top">
+                <div class="col-md-{{ size }}">
+                    <div class="list-group">
+                        <a 
+                            href="" class="list-group-item" 
+                            ng-repeat="template in templates" 
+                            ng-click="select(template)" 
+                            ng-attr-title="{{ show_title(template) }}"
+                            ng-class="{danger: template.id == undefined}">
+                            <button type="button" class="close" ng-click="delete(template)" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="list-group-item-heading">
+                                {{template.title}}
+                            </h4>
+                        </a>
+                    </div>
+                </div> 
+                <div class="col-md-8" ng-show="selected">
+                    <div class="alert alert-success" ng-show="success">
+                        <button type="button" class="close" ng-click="success=undefined" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Sucesso:</strong> {{ success }}
+                    </div>
+                    <form ng-submit="save()">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" ng-model="selected.title" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Corpo</label>
+                            <textarea class="form-control" rows="10" ng-model="selected.body"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-lg btn-block btn-success">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Emails -->
+        <div class="inner-page" ng-show="current_page == 'manage_emails'" ng-controller="EmailController">
+            <h2 class="page-headline large text-center">Gerenciamento de Emails</h2>
+                <div class="text-center">Selecione um e-mail para editar ao lado, ou crie um email a partir de um teplate. 
+                <div class="dropdowm">
+                  <button class="btn btn-xs btn-default dropdown-toggle" type="button" id="dropdown-templates" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Templates
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdown-templates">
+                    <li ng-repeat="template in templates"><a href="" ng-click="add(template)">{{ template.title }}</a></li>
+                  </ul>
+                </div> 
+            </div>
+
+            <div class="row inner-page margin-top">
+                <div class="no-style" id="emkt">
+                    <email-template email="selected"></email-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AngularJs Bootstrap Templates -->
+<script type="text/ng-template" id="popover-widget-text">
+        <div class="form-group">
+            <label>Digite o texto:</label>
+            <input type="text" ng-model="text" class="form-control">
+        </div>
+</script>
+<script type="text/ng-template" id="popover-widget-image">
+        <div class="form-group">
+            <label>Escolha a imagem:</label>
+            <input type="file" onchange="angular.element(this).scope().upload_file(this)" class="form-control">
+        </div>
+</script>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script>
+    var url_base = '/index.php/';
+</script>
+<script src="js/jquery.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+<script src="js/ui-bootstrap-tpls-0.13.4.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
